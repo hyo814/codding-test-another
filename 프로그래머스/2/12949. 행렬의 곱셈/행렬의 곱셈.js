@@ -1,22 +1,28 @@
+// https://school.programmers.co.kr/learn/courses/30/lessons/12949
+
 function solution(arr1, arr2) {
-    // arr1의 행(row) 길이와 열(column) 길이를 구합니다.
-    const rows1 = arr1.length;
-    const cols1 = arr1[0].length;
-    // arr2의 행(row) 길이와 열(column) 길이를 구합니다.
-    const rows2 = arr2.length;
-    const cols2 = arr2[0].length;
-    
-    // 결과 행렬을 초기화합니다. (rows1 x cols2 크기)
-    const result = Array.from({ length: rows1 }, () => Array(cols2).fill(0));
-    
-    // 행렬 곱셈을 수행합니다.
-    for (let i = 0; i < rows1; i++) {
-        for (let j = 0; j < cols2; j++) {
-            for (let k = 0; k < cols1; k++) {
-                result[i][j] += arr1[i][k] * arr2[k][j];
-            }
-        }
+  // 행렬 arr1과 arr2의 행과 열의 수
+  const r1 = arr1.length;
+  const c1 = arr1[0].length;
+
+  const r2 = arr2.length;
+  const c2 = arr2[0].length;
+
+  // 결과를 저장할 2차원 배열 초기화
+  const ret = [];
+  for (let i = 0; i < r1; i++) {
+    ret.push(new Array(c2).fill(0));
+  }
+
+  // 첫 번째 행렬 arr1의 각 행과 두 번째 행렬 arr2의 각 열에 대해
+  for (let i = 0; i < r1; i++) {
+    for (let j = 0; j < c2; j++) {
+      // 두 행렬의 데이터를 곱해 결과 배열에 더해줌
+      for (let k = 0; k < c1; k++) {
+        ret[i][j] += arr1[i][k] * arr2[k][j];
+      }
     }
-    
-    return result;
+  }
+
+  return ret;
 }
