@@ -1,5 +1,3 @@
-// https://school.programmers.co.kr/learn/courses/30/lessons/12949
-
 function solution(arr1, arr2) {
   // 행렬 arr1과 arr2의 행과 열의 수
   const r1 = arr1.length;
