@@ -1,94 +1,75 @@
+// 해당 문제는 Heap 구조를 활용해야 함
+class MinHeap {
+  constructor() {
+    this.heap = [];
+  }
+
+  size() {
+    return this.heap.length;
+  }
+      
+    // 값을 넣되, 오름차 순 정렬함
+  push(value) {
+    this.heap.push(value);
+    let currentIndex = this.heap.length - 1;
+
+    while (
+      currentIndex > 0 &&
+      this.heap[currentIndex] < this.heap[Math.floor((currentIndex - 1) / 2)]
+    ) {
+      const temp = this.heap[currentIndex];
+      this.heap[currentIndex] = this.heap[Math.floor((currentIndex - 1) / 2)];
+      this.heap[Math.floor((currentIndex - 1) / 2)] = temp;
+      currentIndex = Math.floor((currentIndex - 1) / 2);
+    }
+  }
+
+    // 값을 빼되, 오름차 순 정렬 함
+  pop() {
+    if (this.heap.length === 0) return null;
+    if (this.heap.length === 1) return this.heap.pop();
+
+    const minValue = this.heap[0];
+    this.heap[0] = this.heap.pop();
+    let currentIndex = 0;
+
+    while (currentIndex * 2 + 1 < this.heap.length) {
+      let minChildIndex = currentIndex * 2 + 2 < this.heap.length && this.heap[currentIndex * 2 + 2] < this.heap[currentIndex * 2 + 1] ? currentIndex * 2 + 2 : currentIndex * 2 + 1;
+
+      if (this.heap[currentIndex] < this.heap[minChildIndex]) {
+        break;
+      }
+
+      const temp = this.heap[currentIndex];
+      this.heap[currentIndex] = this.heap[minChildIndex];
+      this.heap[minChildIndex] = temp;
+      currentIndex = minChildIndex;
+    }
+
+    return minValue;
+  }
+
+  peek() {
+    return this.heap[0];
+  }
+}
+
 function solution(scoville, K) {
-    scoville.sort((a,b)=> b - a) 
-    let cnt = 0 ;
-    let under_K = []
-    let flag = 0 // 다 합쳐서 K보다 큰지 안큰지 판별 0이면 안큰거 1이면 큰거
+  const minHeap = new MinHeap();
 
-    for(let i = 0 ; i < scoville.length ; ++i){
-        if(scoville[i] < K){
-            under_K.push(scoville[i])
-        }
-        else{
-            flag = 1
-        }
-    }    
-   // console.log(under_K)
-    let mixed = []
-    let m_i = 0
-    let i = 0
-    let n1 = 0 
-    let n2 = 0
-    while(1){
-       // console.log(mixed, n1 , n2)
-        if(mixed[m_i] != undefined ){
-            if(under_K.length != 0){
-                if(under_K.at(-1) < mixed[m_i]){
-                    n1 = under_K.pop()
-                }
-                else{
-                    n1 = mixed[m_i]
-                    ++m_i
-                }
-            }
-            else{
-                n1 = mixed[m_i]
-                ++m_i
-            }
-        }
-        else{
-            if(under_K.length != 0){
-                n1 = under_K.pop()
-            }
-            else{
-                break;
-            }
-        }
-        if(mixed[m_i] != undefined ){
-            if(under_K.length != 0){
-                if(under_K.at(-1) < mixed[m_i]){
-                    n2 = under_K.pop()
-                }
-                else{
-                    n2 = mixed[m_i]
-                    ++m_i
-                }
-            }
-            else{
-                n2 = mixed[m_i]
-                ++m_i
-            }
-        }
-        else{
-            if(under_K.length != 0){
-                n2 = under_K.pop()
-            }
-            else{
-                ++cnt
-                break;
-            }
-        }
+  for (const sco of scoville) {
+    minHeap.push(sco);
+  }
 
-        if(n1+n2*2 < K){
-            mixed.push(n1+n2*2)
-        }
-        else{
-            flag = 1 
-        }
-       ++cnt
-    }
-    //if(mixed != [])
-    /*
-    가진 음식 스코빌을 하나씩 지우고 
-    새로운 음식 스코빌을 하나씩 추가해서 arr에 K보다 작으면 저장하기
-    두개의 배열을 다르게 유지해서 
-    가진읍식과 새로운 음식중 작은 것들 부터 먼저 n1,n2로 만든다
-    가진음식, 새로운 음식의 index가 합쳐서 1이라면 return 하기 그리고  flag ==1 이라면 ++cnt 해주고 끝내기 flag == 0 이라면 -1로 끝내기 
-    */
-    if(flag == 1){
-        return cnt 
-    }
-    else{
+  let mixedCount = 0;
 
-        return -1
-    }
+  while (minHeap.size() >= 2 && minHeap.peek() < K) {
+    const first = minHeap.pop();
+    const second = minHeap.pop();
+    const mixedScov = first + second * 2;
+    minHeap.push(mixedScov);
+    mixedCount++;
+  }
+
+  return minHeap.peek() >= K ? mixedCount : -1;
 }
